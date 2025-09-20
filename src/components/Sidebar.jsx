@@ -1,24 +1,27 @@
 // src/components/Sidebar.jsx
 import React, { useState } from "react";
-import { FaHome, FaUser, FaCog, FaBars, FaTimes } from "react-icons/fa";
+import { FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 import "./Sidebar.css";
 
-
-
-//Import images
+// Import images
 import LogoImg from "../assets/logo/Finora_logo.png";
 import AvatarImg from "../assets/avatar/man.jpg";
-import { TbBackground } from "react-icons/tb";
-
-
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
   const toggleMobile = () => setMobileOpen(!mobileOpen);
+
+  const handleLogout = () => {
+    // Clear user authentication info (adjust according to your auth setup)
+    localStorage.removeItem("userToken"); // Example
+    navigate("/login"); // Redirect to login page
+  };
 
   return (
     <>
@@ -40,12 +43,12 @@ const Sidebar = () => {
 
         {/* Logo area */}
         <div className="logo">
-         <img
-  src={LogoImg}
-  alt="Logo"
-  className="logo-img"
-  style={{ backgroundColor: "white", padding: "5px", borderRadius: "4px" }}
-/>
+          <img
+            src={LogoImg}
+            alt="Logo"
+            className="logo-img"
+            style={{ backgroundColor: "white", padding: "5px", borderRadius: "4px" }}
+          />
         </div>
 
         {/* Profile */}
@@ -77,6 +80,16 @@ const Sidebar = () => {
               label="Settings"
               collapsed={collapsed}
               onClick={toggleMobile}
+            />
+            {/* Logout button */}
+            <NavItem
+              icon={FaSignOutAlt}
+              label="Logout"
+              collapsed={collapsed}
+              onClick={() => {
+                toggleMobile(); // Close sidebar on mobile
+                handleLogout(); // Perform logout
+              }}
             />
           </ul>
         </nav>
