@@ -1,7 +1,8 @@
 const API_CONFIG = {
   BASE_URL: "http://localhost:3000",
+  APPLICATION_NAME:"Finora",
   SIGN_IN: "/signIn",
-  APPLICATION_NAME:"Finora"
+  SIGN_UP:"/signUp"
 };
 
 export default API_CONFIG;
