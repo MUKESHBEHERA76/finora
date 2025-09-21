@@ -1,0 +1,75 @@
+/* src/pages/NotFound.css */
+
+.notfound-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #fff;
+  text-align: center;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.notfound-title {
+  font-size: 8rem;
+  font-weight: 900;
+  margin: 0;
+  animation: float 3s ease-in-out infinite;
+}
+
+.notfound-subtitle {
+  font-size: 1.5rem;
+  margin: 10px 0 20px;
+  opacity: 0;
+  animation: fadeUp 2s ease-in-out forwards;
+  animation-delay: 1s;
+}
+
+.notfound-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: #fff;
+  color: #2a5298;
+  font-weight: bold;
+  border-radius: 25px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.notfound-btn:hover {
+  background: #ff9800;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
