@@ -13,8 +13,12 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
   const { logout, user } = useAuth();
 
   const [profile, setProfile] = useState({
-    name: "John Doe",
+    userName: "John Doe",
     avatar: null,
+    userID: "",
+    registrationDate:"",
+    isverified:"",
+    gender:""
   });
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
@@ -36,8 +40,12 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           // store profile data in cookie
           Cookies.set("profile", JSON.stringify(data), { expires: 1 });
           setProfile({
-            name: data.userName,
+            userName: data.userName,
             avatar: data.avatarBase64Data,
+            userID:data.userID,
+            registrationDate:data.registrationDate,
+            isverified:data.isverified,
+            gender:data.gender
           });
         }
       })();
@@ -65,7 +73,7 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
             alt="Profile"
             className="profile-pic"
           />
-          {!collapsed && <h3 className="profile-name">{profile.name}</h3>}
+          {!collapsed && <h3 className="profile-name">{profile.userName}</h3>}
         </div>
 
         <nav>
