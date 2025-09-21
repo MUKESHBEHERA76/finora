@@ -1,7 +1,7 @@
-function Dashboard(){
+import React from "react";
 
-    return(
-        <p>Home / Dashboard</p>
-    );
+function Dashboard() {
+  return <p>Home / Dashboard</p>;
 }
-export default Dashboard
+
+export default Dashboard;
