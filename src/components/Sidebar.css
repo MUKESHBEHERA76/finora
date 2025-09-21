@@ -1,184 +1,99 @@
-/* src/components/Sidebar.css */
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
-/* Hamburger for mobile */
+/* Hamburger */
 .hamburger {
   display: none;
   position: fixed;
   top: 15px;
   left: 15px;
-  z-index: 1001;
+  z-index: 1100;
   cursor: pointer;
   color: #1e3a8a;
 }
 
 /* Sidebar */
 .sidebar {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e3a8a;
+  color: white;
+  height: 100vh;
+  width: 250px;
+  transition: all 0.3s ease;
+  overflow: hidden;
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
-  background-color: #1e3a8a;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  overflow: hidden;
   z-index: 1000;
-  transform: translateX(0);
 }
 
-/* Expanded / collapsed desktop */
-.sidebar.expanded {
-  width: 250px;
-}
-.sidebar.collapsed {
-  width: 80px;
-}
+.sidebar.collapsed { width: 80px; }
+.sidebar.mobile-open { transform: translateX(0); box-shadow: 2px 0 12px rgba(0,0,0,0.25); }
 
-/* Mobile hidden by default */
-.sidebar {
-  transform: translateX(0);
-}
-.sidebar.mobile-open {
-  transform: translateX(0);
-}
-
-/* Logo */
+/* Logo container */
 .logo {
   text-align: center;
   padding: 15px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Logo image with white background */
 .logo-img {
+  background-color: white;  /* only behind the image */
+  padding: 5px;             /* optional, space around the logo */
+  border-radius: 4px;       /* optional, rounded corners */
   width: 120px;
   height: auto;
+  transition: width 0.3s;
 }
-
 /* Profile */
-.profile {
-  text-align: center;
-  padding: 15px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.profile-pic {
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  transition: all 0.3s;
-}
-
-.profile-name {
-  margin-top: 10px;
-  font-size: 16px;
-}
+.profile { text-align: center; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.profile-pic { border-radius: 50%; width: 60px; height: 60px; }
+.profile-name { margin-top: 10px; font-size: 16px; transition: opacity 0.3s; }
 
 /* Navigation */
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+nav ul { list-style: none; padding: 0; margin: 0; }
+.nav-item { padding: 12px 20px; transition: background 0.2s; cursor: pointer; }
+.nav-item a { color: white; text-decoration: none; display: flex; align-items: center; }
+.nav-item.active, .nav-item:hover { background-color: rgba(255,255,255,0.1); }
+.nav-icon { margin-right: 10px; min-width: 20px; text-align: center; }
+.nav-label { white-space: nowrap; transition: opacity 0.3s; }
 
-.nav-item {
-  padding: 12px 20px;
-  transition: background 0.2s;
-}
-
-.nav-item.active,
-.nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.nav-item a {
-  color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-}
-
-.nav-icon {
-  margin-right: 10px;
-  min-width: 20px;
-  text-align: center;
-}
-
-.nav-label {
-  white-space: nowrap;
-}
-
-/* Collapse button (desktop only) */
+/* Collapse button */
 .collapse-btn {
   margin-top: auto;
   padding: 10px;
   text-align: center;
   cursor: pointer;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
   font-weight: bold;
 }
 
-/* Mobile close button */
+/* Mobile close */
 .mobile-close {
   display: none;
   padding: 10px 20px;
   text-align: right;
   color: white;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Main content adjustments (desktop default) */
-.main-content {
-  margin-left: 250px;
-  padding: 20px;
-  transition: margin-left 0.3s ease;
-}
-
-/* Collapse effect for desktop */
-.sidebar.collapsed ~ .main-content {
-  margin-left: 80px;
-}
-
-/* Responsive: Mobile view */
+/* Responsive */
 @media (max-width: 768px) {
-  .hamburger {
-    display: block;
-  }
-
-  .sidebar {
-    width: 250px;
-    transform: translateX(-100%); /* hidden by default */
-  }
-
-  .sidebar.mobile-open {
-    transform: translateX(0); /* slide in */
-  }
-
-  .collapse-btn {
-    display: none; /* no collapse button on mobile */
-  }
-
-  .mobile-close {
-    display: block;
-  }
-
-  .main-content {
-    margin-left: 0; /* ✅ full width on mobile */
-  }
+  .hamburger { display: block; }
+  .sidebar { transform: translateX(-100%); width: 250px; }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .collapse-btn { display: none; }
+  .mobile-close { display: block; }
+  .logo-img { width: 120px; }
+  .profile-name, .nav-label { opacity: 1; }
 }
 
-/* Page text styling (breadcrumbs/path-like) */
-.page-text {
-  font-size: 14px;
-  color: #333;
-  text-align: left;
-  margin: 0;
-  line-height: 1.5;
-}
+/* Collapsed adjustments */
+.sidebar.collapsed .logo-img { width: 50px; }
+.sidebar.collapsed .profile-name, .sidebar.collapsed .nav-label { opacity: 0; }
