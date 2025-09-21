@@ -1,0 +1,132 @@
+/* Wrapper with bubbles */
+.signup-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f4f8;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 15px rgba(255, 255, 255, 0.3),
+              0 4px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  animation: floatBubbles 25s linear infinite;
+}
+.bubble.small { width: 80px; height: 80px; }
+.bubble.medium { width: 150px; height: 150px; }
+.bubble.large { width: 250px; height: 250px; }
+
+@keyframes floatBubbles {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); }
+  50% { transform: translateY(-50px) translateX(20px) rotate(180deg); }
+  100% { transform: translateY(0) translateX(0) rotate(360deg); }
+}
+
+/* Card */
+.signup-card {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 420px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.signup-logo {
+  width: 120px;
+  margin-bottom: 1rem;
+}
+
+.signup-card h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Inputs */
+.signup-card input,
+.signup-card select {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+button:hover {
+  transform: translateY(-2px);
+}
+
+/* Messages */
+.error {
+  color: red;
+  margin-bottom: 1rem;
+  font-size: 14px;
+}
+.success {
+  color: green;
+  margin-bottom: 1rem;
+  font-size: 14px;
+}
+
+/* Links */
+.signup-links {
+  margin-top: 0.5rem;
+  font-size: 14px;
+  color: #555;
+}
+.signup-links a {
+  color: #2575fc;
+  font-weight: bold;
+  text-decoration: none;
+}
+.signup-links a:hover {
+  text-decoration: underline;
+}

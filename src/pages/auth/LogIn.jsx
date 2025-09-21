@@ -4,6 +4,9 @@ import { signIn } from "../../services/authApiService";
 import { useAuth } from "../../context/AuthContext";
 import LogoImg from "../../assets/logo/Finora_logo.png";
 import "./LogIn.css";
+import API_CONFIG from "../../config";
+
+
 
 const bubbles = [
   { size: "small", top: "10%", left: "20%" },
@@ -32,7 +35,7 @@ const LogIn = () => {
       return;
     }
 
-    const res = await signIn(email, pass, "Finora");
+    const res = await signIn(email, pass, API_CONFIG.APPLICATION_NAME);
     if (res.success) {
       login({ email: res.data.email, role: res.data.role }, res.data.token);
       navigate("/");
