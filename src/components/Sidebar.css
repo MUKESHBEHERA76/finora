@@ -97,3 +97,17 @@ nav ul { list-style: none; padding: 0; margin: 0; }
 /* Collapsed adjustments */
 .sidebar.collapsed .logo-img { width: 50px; }
 .sidebar.collapsed .profile-name, .sidebar.collapsed .nav-label { opacity: 0; }
+
+
+.verify-alert {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.15); /* subtle white overlay */
+  color: #ffcc00; /* soft yellow for warning */
+  font-size: 12px;
+  border-radius: 12px;
+  line-height: 1.4;
+  display: inline-block;
+  max-width: 250px;
+  text-align: center;
+}

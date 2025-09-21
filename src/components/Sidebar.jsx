@@ -16,9 +16,9 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
     userName: "John Doe",
     avatar: null,
     userID: "",
-    registrationDate:"",
-    isverified:"",
-    gender:""
+    registrationDate: "",
+    isverified: "",
+    gender: ""
   });
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
@@ -42,10 +42,10 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           setProfile({
             userName: data.userName,
             avatar: data.avatarBase64Data,
-            userID:data.userID,
-            registrationDate:data.registrationDate,
-            isverified:data.isverified,
-            gender:data.gender
+            userID: data.userID,
+            registrationDate: data.registrationDate,
+            isverified: data.isverified,
+            gender: data.gender
           });
         }
       })();
@@ -68,13 +68,23 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
         </div>
 
         <div className="profile">
-          <img
-            src={profile.avatar}
-            alt="Profile"
-            className="profile-pic"
-          />
-          {!collapsed && <h3 className="profile-name">{profile.userName}</h3>}
+  <img
+    src={profile.avatar}
+    alt="Profile"
+    className="profile-pic"
+  />
+  {!collapsed && (
+    <>
+      <h3 className="profile-name">{profile.userName}</h3>
+      {profile.isverified === "false" && (
+        <div className="verify-alert">
+          ⚠️ Your account is not verified. Verify it from Profile or it will be deleted from our system.
         </div>
+      )}
+    </>
+  )}
+</div>
+
 
         <nav>
           <ul>
