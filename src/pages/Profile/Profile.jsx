@@ -52,7 +52,12 @@ const Profile = () => {
           </div>
           <div className="profile-field">
             <span className="label">Verified:</span>
-            <span className="value">{profile.isverified ? "Yes" : "No"}</span>
+            {profile.isverified === "false" && (
+        <span className="value">No</span>
+      )}
+       {profile.isverified === "true" && (
+        <span className="value">Yes</span>
+      )}
           </div>
           <div className="profile-field">
             <span className="label">Gender:</span>
