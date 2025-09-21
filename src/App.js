@@ -8,6 +8,11 @@ import ResetPwd from "./pages/auth/ResetPwd"
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Profile from "./pages/Profile/Profile";
 import NotFound from "./pages/NotFound/NotFound";
+import Category from "./pages/Category/Category"
+import Transactions from "./pages/Transactions/Transactions"
+import Loans from "./pages/Payments/Loans/Loans"
+import Bonds from "./pages/Payments/Bonds/Bonds"
+
 
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -44,6 +49,10 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/profile" element={<Profile />} />
+                      <Route path="/payments/loans" element={<Loans />} />
+                      <Route path="/payments/bonds" element={<Bonds />} />
+                       <Route path="/categories" element={<Category />} />
+                        <Route path="/transactions" element={<Transactions />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </div>

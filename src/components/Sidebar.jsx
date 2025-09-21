@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
+import { 
+  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt, 
+  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt 
+} from "react-icons/fa";
 import NavItem from "./NavItem";
 import { useAuth } from "../context/AuthContext";
 import LogoImg from "../assets/logo/Finora_logo.png";
@@ -21,8 +24,11 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
     gender: ""
   });
 
+  const [paymentsOpen, setPaymentsOpen] = useState(false);
+
   const toggleCollapsed = () => setCollapsed(!collapsed);
   const toggleMobile = () => setMobileOpen(!mobileOpen);
+  const togglePayments = () => setPaymentsOpen(!paymentsOpen);
 
   const handleLogout = () => {
     logout();
@@ -37,7 +43,6 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
         if (data.error) {
           alert(data.error);
         } else {
-          // store profile data in cookie
           Cookies.set("profile", JSON.stringify(data), { expires: 1 });
           setProfile({
             userName: data.userName,
@@ -68,29 +73,48 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
         </div>
 
         <div className="profile">
-  <img
-    src={profile.avatar}
-    alt="Profile"
-    className="profile-pic"
-  />
-  {!collapsed && (
-    <>
-      <h3 className="profile-name">{profile.userName}</h3>
-      {profile.isverified === "false" && (
-        <div className="verify-alert">
-          ⚠️ Your account is not verified. Verify it from Profile or it will be deleted from our system.
+          <img src={profile.avatar} alt="Profile" className="profile-pic" />
+          {!collapsed && (
+            <>
+              <h3 className="profile-name">{profile.userName}</h3>
+              {profile.isverified === "false" && (
+                <div className="verify-alert">
+                  ⚠️ Your account is not verified. Verify it from Profile or it will be deleted.
+                </div>
+              )}
+            </>
+          )}
         </div>
-      )}
-    </>
-  )}
-</div>
-
 
         <nav>
           <ul>
             <NavItem to="/" icon={FaHome} label="Home" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/profile" icon={FaUser} label="Profile" collapsed={collapsed} onClick={toggleMobile} />
-            <NavItem to="/settings" icon={FaCog} label="Settings" collapsed={collapsed} onClick={toggleMobile} />
+
+            {/* Independent items */}
+            <NavItem to="/transactions" icon={FaExchangeAlt} label="Transactions" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/categories" icon={FaFolderOpen} label="Categories" collapsed={collapsed} onClick={toggleMobile} />
+
+            {/* Dropdown: Payments */}
+            <li className={`nav-item dropdown ${paymentsOpen ? "open" : ""}`}>
+              <div className="nav-link" onClick={togglePayments}>
+                <FaMoneyBillAlt />
+                {!collapsed && <span className="label">Payments</span>}
+                {!collapsed && (paymentsOpen ? <FaChevronUp /> : <FaChevronDown />)}
+              </div>
+
+              {!collapsed && (
+                <ul className={`dropdown-menu ${paymentsOpen ? "show" : ""}`}>
+                  <li>
+                    <NavItem to="/payments/loans" label="Loans" collapsed={collapsed} onClick={toggleMobile} />
+                  </li>
+                  <li>
+                    <NavItem to="/payments/bonds" label="Bonds" collapsed={collapsed} onClick={toggleMobile} />
+                  </li>
+                </ul>
+              )}
+            </li>
+
             <NavItem icon={FaSignOutAlt} label="Logout" collapsed={collapsed} onClick={handleLogout} />
           </ul>
         </nav>

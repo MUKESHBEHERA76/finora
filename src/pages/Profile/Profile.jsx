@@ -44,7 +44,11 @@ const Profile = () => {
           </div>
           <div className="profile-field">
             <span className="label">User ID:</span>
-            <span className="value">{profile.userID}</span>
+            <span className="value">
+              {profile.userID
+                ? profile.userID.slice(0, 5) + "*".repeat(profile.userID.length - 5)
+                : "-"}
+            </span>
           </div>
           <div className="profile-field">
             <span className="label">Registration Date:</span>
@@ -53,11 +57,11 @@ const Profile = () => {
           <div className="profile-field">
             <span className="label">Verified:</span>
             {profile.isverified === "false" && (
-        <span className="value">No</span>
-      )}
-       {profile.isverified === "true" && (
-        <span className="value">Yes</span>
-      )}
+              <span className="value">No</span>
+            )}
+            {profile.isverified === "true" && (
+              <span className="value">Yes</span>
+            )}
           </div>
           <div className="profile-field">
             <span className="label">Gender:</span>

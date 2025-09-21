@@ -3,7 +3,9 @@ const API_CONFIG = {
   APPLICATION_NAME:"Finora",
   SIGN_IN: "/signIn",
   SIGN_UP:"/signUp",
-  GET_PROFILE_INFO: "/getProfileInfo"
+  GET_PROFILE_INFO: "/getProfileInfo",
+  SEND_OTP:"/initiateOtp",
+  VERIFY_OTP:"/verifyOtp"
 };
 
 export default API_CONFIG;
