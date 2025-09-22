@@ -1,8 +1,9 @@
+// src/components/Sidebar.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt, 
-  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt 
+import {
+  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt,
+  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt
 } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { useAuth } from "../context/AuthContext";
@@ -25,6 +26,7 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
   });
 
   const [paymentsOpen, setPaymentsOpen] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0); // in seconds
 
   const toggleCollapsed = () => setCollapsed(!collapsed);
   const toggleMobile = () => setMobileOpen(!mobileOpen);
@@ -32,18 +34,17 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
 
   const handleLogout = () => {
     logout();
+    Cookies.remove("loginExpiry");
     navigate("/login");
     setMobileOpen(false);
   };
 
+  // When user logs in, set expiry timestamp if not already there
   useEffect(() => {
     if (user?.email) {
       (async () => {
         const data = await getProfileInfo(user.email);
-        if (data.error) {
-          alert(data.error);
-        } else {
-          Cookies.set("profile", JSON.stringify(data), { expires: 1 });
+        if (!data.error) {
           setProfile({
             userName: data.userName,
             avatar: data.avatarBase64Data,
@@ -52,10 +53,45 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
             isverified: data.isverified,
             gender: data.gender
           });
+
+          // Check if loginExpiry already exists, else set one
+          let expiry = Cookies.get("loginExpiry");
+          if (!expiry) {
+            expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+            Cookies.set("loginExpiry", expiry.toISOString()); 
+          }
         }
       })();
     }
   }, [user]);
+
+  // Countdown logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const expiry = Cookies.get("loginExpiry");
+      if (!expiry) {
+        handleLogout();
+        return;
+      }
+
+      const diff = new Date(expiry).getTime() - Date.now();
+
+      if (diff <= 0) {
+        clearInterval(interval);
+        handleLogout();
+      } else {
+        setTimeLeft(Math.floor(diff / 1000));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
+  };
 
   return (
     <>
@@ -77,6 +113,10 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           {!collapsed && (
             <>
               <h3 className="profile-name">{profile.userName}</h3>
+              {/* Timer alert box */}
+              <div className="timer-alert">
+                ⏳ Session expires in <strong>{formatTime(timeLeft)}</strong>
+              </div>
               {profile.isverified === "false" && (
                 <div className="verify-alert">
                   ⚠️ Your account is not verified. Verify it from Profile or it will be deleted.
@@ -90,8 +130,6 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           <ul>
             <NavItem to="/" icon={FaHome} label="Home" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/profile" icon={FaUser} label="Profile" collapsed={collapsed} onClick={toggleMobile} />
-
-            {/* Independent items */}
             <NavItem to="/transactions" icon={FaExchangeAlt} label="Transactions" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/categories" icon={FaFolderOpen} label="Categories" collapsed={collapsed} onClick={toggleMobile} />
 

@@ -21,8 +21,10 @@ export const AuthProvider = ({ children }) => {
   const login = (userData, authToken) => {
     setUser(userData);
     setToken(authToken);
-    Cookies.set("user", JSON.stringify(userData), { expires: 1 }); // 1 day
-    Cookies.set("token", authToken, { expires: 1 });
+ // Expiry after 15 minutes
+  const expiryDate = new Date(new Date().getTime() + 15 * 60 * 1000);
+     Cookies.set("user", JSON.stringify(userData), { expires: expiryDate });
+  Cookies.set("token", authToken, { expires: expiryDate });
   };
 
   const logout = () => {
