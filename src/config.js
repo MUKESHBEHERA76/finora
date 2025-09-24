@@ -5,7 +5,8 @@ const API_CONFIG = {
   SIGN_UP:"/signUp",
   GET_PROFILE_INFO: "/getProfileInfo",
   SEND_OTP:"/initiateOtp",
-  VERIFY_OTP:"/verifyOtp"
+  VERIFY_OTP:"/verifyOtp",
+  GET_CATEGORIES:'/getCategory'
 };
 
 export default API_CONFIG;

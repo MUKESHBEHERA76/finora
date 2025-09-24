@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt,
-  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt
+  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt,FaChartLine,
+  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt,
 } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { useAuth } from "../context/AuthContext";
@@ -130,28 +130,12 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           <ul>
             <NavItem to="/" icon={FaHome} label="Home" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/profile" icon={FaUser} label="Profile" collapsed={collapsed} onClick={toggleMobile} />
-            <NavItem to="/transactions" icon={FaExchangeAlt} label="Transactions" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/categories" icon={FaFolderOpen} label="Categories" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/transactions" icon={FaExchangeAlt} label="Transactions" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/payments/loans" icon={FaMoneyBillAlt} label="Loans" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/payments/bonds" icon={FaChartLine} label="Bonds" collapsed={collapsed} onClick={toggleMobile} />
 
-            {/* Dropdown: Payments */}
-            <li className={`nav-item dropdown ${paymentsOpen ? "open" : ""}`}>
-              <div className="nav-link" onClick={togglePayments}>
-                <FaMoneyBillAlt />
-                {!collapsed && <span className="label">Payments</span>}
-                {!collapsed && (paymentsOpen ? <FaChevronUp /> : <FaChevronDown />)}
-              </div>
-
-              {!collapsed && (
-                <ul className={`dropdown-menu ${paymentsOpen ? "show" : ""}`}>
-                  <li>
-                    <NavItem to="/payments/loans" label="Loans" collapsed={collapsed} onClick={toggleMobile} />
-                  </li>
-                  <li>
-                    <NavItem to="/payments/bonds" label="Bonds" collapsed={collapsed} onClick={toggleMobile} />
-                  </li>
-                </ul>
-              )}
-            </li>
+           
 
             <NavItem icon={FaSignOutAlt} label="Logout" collapsed={collapsed} onClick={handleLogout} />
           </ul>
