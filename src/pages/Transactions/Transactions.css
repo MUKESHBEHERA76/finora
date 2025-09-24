@@ -1,0 +1,473 @@
+/* Dashboard header */
+.dashboard-header {
+  background: linear-gradient(90deg, #dbeafe, #93c5fd);
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e3a8a;
+  border-radius: 6px;
+  margin: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-header p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    font-size: 14px;
+    padding: 10px 15px;
+    margin: 5px;
+  }
+}
+
+/* Transactions container */
+.transactions-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Unified container width for cards, filter/add, and table */
+.transactions-container > .dashboard-cards,
+.transactions-container > .filter-add-section,
+.transactions-container > .table-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+/* Dashboard cards with soft blaze/glaze border */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f9fafb;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Soft blaze/glaze border behind content */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: -2px; /* border thickness */
+  border-radius: 14px;
+  background: linear-gradient(135deg, #93c5fd66, #60a5fa66, #10b98166, #facc1566);
+  z-index: 0; /* behind the card content */
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Card icon stays above the border */
+.card .card-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.05);
+  position: relative;
+  z-index: 1;
+}
+
+/* Specific card icon colors */
+.card.saving .card-icon { background: #93c5fd; color: #1e3a8a; }
+.card.earning .card-icon { background: #6ee7b7; color: #065f46; }
+.card.expense .card-icon { background: #fecaca; color: #991b1b; }
+
+/* Card info above blaze border */
+.card .card-info {
+  position: relative;
+  z-index: 1;
+}
+
+.card .card-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #374151;
+}
+
+.card .card-info p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Filter and Add button section */
+.filter-add-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px; /* Added space from above cards */
+  margin-bottom: 15px;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-section label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.filter-section select,
+.filter-section input {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  color: #111827;
+}
+
+.filter-section select:focus,
+.filter-section input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.filter-section button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.filter-section button:hover {
+  background: #1e40af;
+}
+
+.add-transaction-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-transaction-btn:hover {
+  background: #059669;
+}
+
+/* Error message */
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Table wrapper */
+.table-wrapper {
+  width: 100%;
+}
+
+.table-responsive {
+  border-radius: 10px;
+  overflow-x: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.transactions-table th {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 12px 16px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.transactions-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f1f1;
+  color: #333;
+  background: #ffffff;
+}
+
+.transactions-table tr:nth-child(even) td {
+  background-color: #f9fafb;
+}
+
+.transactions-table tr:hover td {
+  background-color: #e0f2fe;
+  transition: background 0.3s ease;
+}
+
+.category-img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Table action buttons */
+.transactions-table .action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.transactions-table .action-buttons button {
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.transactions-table .action-buttons .edit-btn {
+  background: #3b82f6;
+  color: white;
+}
+
+.transactions-table .action-buttons .edit-btn:hover {
+  background: #2563eb;
+}
+
+.transactions-table .action-buttons .delete-btn {
+  background: #ef4444;
+  color: white;
+}
+
+.transactions-table .action-buttons .delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  background: #f9fbff;
+  border-top: 1px solid #eee;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.pagination-icon {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.pagination-icon:disabled {
+  color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.pagination-icon:hover:not(:disabled) {
+  color: #1e40af;
+}
+
+.page-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e3a8a;
+}
+
+/* Animated arrows */
+.pagination .animated-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.pagination .pagination-icon:hover .animated-arrow {
+  transform: translateX(3px);
+}
+
+.pagination .pagination-icon:disabled .animated-arrow {
+  transform: translateX(0);
+  opacity: 0.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-add-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .transactions-table th,
+  .transactions-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .add-transaction-btn,
+  .filter-section button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* Modal card and category css*/
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal Content */
+.modal-content {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-content h3 {
+  margin: 0;
+  text-align: center;
+  color: #1e3a8a;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.category-preview {
+  width: 36px;
+  height: 36px;
+  margin-top: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.modal-actions button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-actions button:first-child {
+  background: #10b981;
+  color: white;
+}
+
+.modal-actions button:first-child:hover {
+  background: #059669;
+}
+
+.modal-actions button:last-child {
+  background: #ef4444;
+  color: white;
+}
+
+.modal-actions button:last-child:hover {
+  background: #b91c1c;
+}
+
+/* Spinner animation */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.submit-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e3a8a;
+}
