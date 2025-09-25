@@ -8,7 +8,9 @@ const API_CONFIG = {
   VERIFY_OTP:"/verifyOtp",
   GET_CATEGORIES:'/getCategory',
   GET_TRANSACTIONS:'/getTransactions',
-  INSERT_TRANSACTIONS:'/insertTransaction'
+  INSERT_TRANSACTIONS:'/insertTransaction',
+  EDIT_TRANSACTIONS:'/editTransaction',
+  DELETE_TRANSACTIONS:'/deleteTransaction'
 };
 
 export default API_CONFIG;

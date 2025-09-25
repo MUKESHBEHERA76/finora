@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getTransactions } from "../../services/transactionService";
+import {
+  getTransactions,
+  insertTransaction,
+  editTransaction,
+  deleteTransaction,
+} from "../../services/transactionService";
 import { getCategories } from "../../services/categoryService";
-import axios from "axios";
-import Cookies from "js-cookie";
-import API_CONFIG from "../../config";
 import "./Transactions.css";
 import {
   FaPiggyBank,
@@ -17,18 +19,28 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 
-const Transactions = ({ navigate }) => {
+const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("this-month");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [totals, setTotals] = useState({ savingTotal: 0, earningTotal: 0, expenseTotal: 0 });
+  const [totals, setTotals] = useState({
+    savingTotal: 0,
+    earningTotal: 0,
+    expenseTotal: 0,
+  });
   const [currentPage, setCurrentPage] = useState(1);
-  const [loadingCategories, setLoadingCategories] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
+  // Modal states
   const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState("add"); // "add" | "edit"
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
   const [formData, setFormData] = useState({
+    tnID: "",
     category_type: "",
     category_name: "",
     category_image_url: "",
@@ -37,7 +49,11 @@ const Transactions = ({ navigate }) => {
     short_note: "",
   });
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
+
+  // Separate messages
+  const [transactionMessage, setTransactionMessage] = useState("");
+  const [deleteMessage, setDeleteMessage] = useState("");
+
   const transactionsPerPage = 10;
 
   // Fetch transactions
@@ -45,7 +61,9 @@ const Transactions = ({ navigate }) => {
     try {
       const data = await getTransactions({ filter, startDate, endDate });
       setTransactions(data.results || []);
-      setTotals(data.totalAmount || { savingTotal: 0, earningTotal: 0, expenseTotal: 0 });
+      setTotals(
+        data.totalAmount || { savingTotal: 0, earningTotal: 0, expenseTotal: 0 }
+      );
       setError("");
       setCurrentPage(1);
     } catch (err) {
@@ -59,31 +77,52 @@ const Transactions = ({ navigate }) => {
     fetchTransactions();
   }, []);
 
-  // Fetch categories
-  const openAddTransactionModal = async () => {
+  // Open modal
+  const openTransactionModal = async (mode, transaction = null) => {
     setShowModal(true);
+    setModalMode(mode);
     setLoadingCategories(true);
     setError("");
+    setTransactionMessage("");
+
     try {
-      const data = await getCategories(); // backend returns { categoryList: [...] }
-      if (data && Array.isArray(data.categoryList)) {
-        setCategories(data.categoryList);
-      } else {
-        setCategories([]);
-        console.warn("Unexpected categories response:", data);
-      }
+      const data = await getCategories();
+      setCategories(data?.categoryList || []);
     } catch (err) {
       setError("Failed to load categories");
     } finally {
       setLoadingCategories(false);
     }
+
+    if (mode === "edit" && transaction) {
+      setFormData({
+        tnID: transaction.tn_id,
+        category_type: transaction.category_type,
+        category_name: transaction.category_name,
+        category_image_url: transaction.image_id,
+        transaction_date: transaction.transaction_date,
+        amount: transaction.amount,
+        short_note: transaction.short_note || "",
+      });
+    } else {
+      setFormData({
+        tnID: "",
+        category_type: "",
+        category_name: "",
+        category_image_url: "",
+        transaction_date: "",
+        amount: "",
+        short_note: "",
+      });
+    }
   };
 
   // Input handlers
-  const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleInputChange = (e) =>
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleCategoryTypeChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       category_type: e.target.value,
       category_name: "",
@@ -93,9 +132,11 @@ const Transactions = ({ navigate }) => {
 
   const handleCategoryNameChange = (e) => {
     const selectedCategory = categories.find(
-      c => c.category_type === formData.category_type && c.category_name === e.target.value
+      (c) =>
+        c.category_type === formData.category_type &&
+        c.category_name === e.target.value
     );
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       category_name: e.target.value,
       category_image_url: selectedCategory?.image_url || "",
@@ -104,30 +145,50 @@ const Transactions = ({ navigate }) => {
 
   // Submit transaction
   const submitTransaction = async () => {
-    const token = Cookies.get("token");
-    const user = Cookies.get("user");
-    const email = user ? JSON.parse(user).email : null;
-    const application = API_CONFIG.APPLICATION_NAME;
-
-    if (!formData.category_type || !formData.category_name || !formData.transaction_date || !formData.amount) {
-      setSubmitMessage("Please fill all mandatory fields!");
+    if (
+      !formData.category_type ||
+      !formData.category_name ||
+      !formData.transaction_date ||
+      !formData.amount
+    ) {
+      setTransactionMessage("Please fill all mandatory fields!");
       return;
     }
 
     setSubmitLoading(true);
-    setSubmitMessage("");
+    setTransactionMessage("");
 
     try {
-      const response = await axios.post(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.INSERT_TRANSACTIONS}`,
-        { email, application, ...formData },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSubmitMessage(response.data.message || "Transaction added successfully");
+      let response;
+      if (modalMode === "add") {
+        response = await insertTransaction(formData);
+      } else {
+        response = await editTransaction(formData);
+      }
+
+      setTransactionMessage(response.message || "Success");
       setShowModal(false);
       fetchTransactions();
     } catch (err) {
-      setSubmitMessage(err.response?.data?.error || err.message);
+      setTransactionMessage(err.message);
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  // Delete transaction
+  const confirmDelete = async () => {
+    if (!deleteConfirm) return;
+    setSubmitLoading(true);
+    setDeleteMessage("");
+
+    try {
+      const response = await deleteTransaction(deleteConfirm);
+      setDeleteMessage(response.message || "Deleted successfully");
+      setDeleteConfirm(null);
+      fetchTransactions();
+    } catch (err) {
+      setDeleteMessage(err.message);
     } finally {
       setSubmitLoading(false);
     }
@@ -149,21 +210,27 @@ const Transactions = ({ navigate }) => {
         {/* Cards */}
         <div className="dashboard-cards">
           <div className="card saving">
-            <div className="card-icon"><FaPiggyBank /></div>
+            <div className="card-icon">
+              <FaPiggyBank />
+            </div>
             <div className="card-info">
               <h4>Saving</h4>
               <p>₹{Number(totals.savingTotal).toLocaleString("en-IN")}</p>
             </div>
           </div>
           <div className="card earning">
-            <div className="card-icon"><FaWallet /></div>
+            <div className="card-icon">
+              <FaWallet />
+            </div>
             <div className="card-info">
               <h4>Earning</h4>
               <p>₹{Number(totals.earningTotal).toLocaleString("en-IN")}</p>
             </div>
           </div>
           <div className="card expense">
-            <div className="card-icon"><FaMoneyBillWave /></div>
+            <div className="card-icon">
+              <FaMoneyBillWave />
+            </div>
             <div className="card-info">
               <h4>Expense</h4>
               <p>₹{Number(totals.expenseTotal).toLocaleString("en-IN")}</p>
@@ -171,7 +238,7 @@ const Transactions = ({ navigate }) => {
           </div>
         </div>
 
-        {/* Filter and Add Transaction */}
+        {/* Filter & Add */}
         <div className="filter-add-section">
           <div className="filter-section">
             <label>Filter:</label>
@@ -182,87 +249,164 @@ const Transactions = ({ navigate }) => {
               <option value="this-year">This Year</option>
               <option value="custom">Custom</option>
             </select>
-
             {filter === "custom" && (
               <>
-                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
               </>
             )}
-
             <button onClick={fetchTransactions}>View</button>
           </div>
 
-          <button className="add-transaction-btn" onClick={openAddTransactionModal}>
+          <button
+            className="add-transaction-btn"
+            onClick={() => openTransactionModal("add")}
+          >
             <FaPlus /> Add Transaction
           </button>
         </div>
 
         {error && <div className="error-message">{error}</div>}
 
-        {/* Add Transaction Modal */}
+        {/* Add/Edit Modal */}
         {showModal && (
           <div className="modal-overlay">
             <div className="modal-content">
-              <h3>Add Transaction</h3>
+              <h3>
+                {modalMode === "add" ? "Add Transaction" : "Edit Transaction"}
+              </h3>
               {loadingCategories ? (
-                <div className="loading-spinner"><FaSpinner className="spin" /> Loading...</div>
+                <div className="loading-spinner">
+                  <FaSpinner className="spin" /> Loading...
+                </div>
               ) : (
                 <>
+                  {modalMode === "edit" && (
+                    <input type="hidden" value={formData.tnID} />
+                  )}
+
                   <div className="form-group">
                     <label>Category Type*</label>
-                    <select name="category_type" value={formData.category_type} onChange={handleCategoryTypeChange}>
+                    <select
+                      name="category_type"
+                      value={formData.category_type}
+                      onChange={handleCategoryTypeChange}
+                    >
                       <option value="">Select Type</option>
-                      {[...new Set(categories.map(c => c.category_type))].map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
+                      {[...new Set(categories.map((c) => c.category_type))].map(
+                        (type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
 
                   {formData.category_type && (
                     <div className="form-group">
                       <label>Category Name*</label>
-                      <select name="category_name" value={formData.category_name} onChange={handleCategoryNameChange}>
+                      <select
+                        name="category_name"
+                        value={formData.category_name}
+                        onChange={handleCategoryNameChange}
+                      >
                         <option value="">Select Category</option>
                         {categories
-                          .filter(c => c.category_type === formData.category_type)
-                          .map(c => (
+                          .filter(
+                            (c) => c.category_type === formData.category_type
+                          )
+                          .map((c) => (
                             <option key={c.category_id} value={c.category_name}>
                               {c.category_name}
                             </option>
                           ))}
                       </select>
                       {formData.category_image_url && (
-                        <img src={formData.category_image_url} alt="icon" className="category-preview" />
+                        <img
+                          src={formData.category_image_url}
+                          alt="icon"
+                          className="category-preview"
+                        />
                       )}
                     </div>
                   )}
 
                   <div className="form-group">
                     <label>Transaction Date*</label>
-                    <input type="date" name="transaction_date" value={formData.transaction_date} onChange={handleInputChange} />
+                    <input
+                      type="date"
+                      name="transaction_date"
+                      value={formData.transaction_date}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
                   <div className="form-group">
                     <label>Amount*</label>
-                    <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} />
+                    <input
+                      type="number"
+                      name="amount"
+                      value={formData.amount}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
                   <div className="form-group">
-                    <label>Short Note (Optional)</label>
-                    <input type="text" name="short_note" value={formData.short_note} onChange={handleInputChange} />
+                    <label>Short Note</label>
+                    <input
+                      type="text"
+                      name="short_note"
+                      value={formData.short_note}
+                      onChange={handleInputChange}
+                    />
                   </div>
 
-                  {submitMessage && <div className="submit-message">{submitMessage}</div>}
+                  {transactionMessage && (
+                    <div className="submit-message">{transactionMessage}</div>
+                  )}
 
                   <div className="modal-actions">
                     <button onClick={submitTransaction} disabled={submitLoading}>
-                      {submitLoading ? <FaSpinner className="spin" /> : "Submit Transaction"}
+                      {submitLoading ? (
+                        <FaSpinner className="spin" />
+                      ) : modalMode === "add" ? (
+                        "Submit Transaction"
+                      ) : (
+                        "Update Transaction"
+                      )}
                     </button>
                     <button onClick={() => setShowModal(false)}>Cancel</button>
                   </div>
                 </>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Delete Modal */}
+        {deleteConfirm && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h3>Confirm Delete</h3>
+              <p>Are you sure you want to delete this transaction?</p>
+              {deleteMessage && (
+                <div className="submit-message">{deleteMessage}</div>
+              )}
+              <div className="modal-actions">
+                <button onClick={confirmDelete} disabled={submitLoading}>
+                  {submitLoading ? <FaSpinner className="spin" /> : "Yes, Delete"}
+                </button>
+                <button onClick={() => setDeleteConfirm(null)}>Cancel</button>
+              </div>
             </div>
           </div>
         )}
@@ -285,15 +429,33 @@ const Transactions = ({ navigate }) => {
               <tbody>
                 {currentTransactions.map((t) => (
                   <tr key={t.tn_id}>
-                    <td><img src={t.image_id} alt="category" className="category-img" /></td>
+                    <td>
+                      <img
+                        src={t.image_id}
+                        alt="category"
+                        className="category-img"
+                      />
+                    </td>
                     <td>{t.category_name}</td>
                     <td>{t.category_type}</td>
                     <td>{t.short_note}</td>
                     <td>{t.transaction_date}</td>
                     <td>₹{Number(t.amount).toLocaleString("en-IN")}</td>
                     <td className="action-buttons">
-                      <button className="edit-btn" title="Edit"><FaEdit /></button>
-                      <button className="delete-btn" title="Delete"><FaTrash /></button>
+                      <button
+                        className="edit-btn"
+                        title="Edit"
+                        onClick={() => openTransactionModal("edit", t)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="delete-btn"
+                        title="Delete"
+                        onClick={() => setDeleteConfirm(t.tn_id)}
+                      >
+                        <FaTrash />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -311,7 +473,9 @@ const Transactions = ({ navigate }) => {
               >
                 <FaArrowLeft className="animated-arrow" />
               </button>
-              <span className="page-info">{currentPage} / {totalPages}</span>
+              <span className="page-info">
+                {currentPage} / {totalPages}
+              </span>
               <button
                 className="pagination-icon"
                 onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
