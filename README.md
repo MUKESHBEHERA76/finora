@@ -78,3 +78,12 @@ npx create-react-app my-app
 cd my-app
 npm install react-router-dom
 npm install react-icons
+
+
+======================================================================
+#Docker compose 
+
+docker build -t finora .
+docker run -d -p 8080:80 finora
+docker run -d --restart always --name finora -p 5556:80 finora
+
