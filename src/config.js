@@ -10,7 +10,8 @@ const API_CONFIG = {
   GET_TRANSACTIONS:'/getTransactions',
   INSERT_TRANSACTIONS:'/insertTransaction',
   EDIT_TRANSACTIONS:'/editTransaction',
-  DELETE_TRANSACTIONS:'/deleteTransaction'
+  DELETE_TRANSACTIONS:'/deleteTransaction',
+  GET_DASHBOARD_INFO:'/getDashboardInfo'
 };
 
 export default API_CONFIG;

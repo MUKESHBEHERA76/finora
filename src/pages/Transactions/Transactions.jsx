@@ -207,7 +207,7 @@ const Transactions = () => {
       </header>
 
       <div className="transactions-container">
-        {/* Cards */}
+        {/* Cards Grid */}
         <div className="dashboard-cards">
           <div className="card saving">
             <div className="card-icon">
@@ -234,6 +234,20 @@ const Transactions = () => {
             <div className="card-info">
               <h4>Expense</h4>
               <p>₹{Number(totals.expenseTotal).toLocaleString("en-IN")}</p>
+            </div>
+          </div>
+          <div className="card purse-left">
+            <div className="card-icon">
+              <FaWallet />
+            </div>
+            <div className="card-info">
+              <h4>Purse Left</h4>
+              <p>
+                ₹
+                {Number(
+                  totals.earningTotal - totals.expenseTotal
+                ).toLocaleString("en-IN")}
+              </p>
             </div>
           </div>
         </div>

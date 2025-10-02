@@ -1,7 +1,13 @@
+import './Bonds.css'
+
 function Bonds(){
 
     return(
-        <h1>This is Bonds page</h1>
+         <>
+            <header className="bonds-header">
+                <p>Home / Payments / Bonds</p>
+            </header>
+        </>
     );
 
 }

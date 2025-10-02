@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt,FaChartLine,
-  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt,
+  FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt, FaChartLine,
+  FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt, FaIdCard, FaFileAlt
 } from "react-icons/fa";
 import NavItem from "./NavItem";
 import { useAuth } from "../context/AuthContext";
@@ -58,7 +58,7 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
           let expiry = Cookies.get("loginExpiry");
           if (!expiry) {
             expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 min
-            Cookies.set("loginExpiry", expiry.toISOString()); 
+            Cookies.set("loginExpiry", expiry.toISOString());
           }
         }
       })();
@@ -134,9 +134,9 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
             <NavItem to="/transactions" icon={FaExchangeAlt} label="Transactions" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/payments/loans" icon={FaMoneyBillAlt} label="Loans" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/payments/bonds" icon={FaChartLine} label="Bonds" collapsed={collapsed} onClick={toggleMobile} />
-
-           
-
+            
+            <NavItem to="/cards" icon={FaIdCard} label="Cards" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/documents" icon={FaFileAlt} label="Documents" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem icon={FaSignOutAlt} label="Logout" collapsed={collapsed} onClick={handleLogout} />
           </ul>
         </nav>
