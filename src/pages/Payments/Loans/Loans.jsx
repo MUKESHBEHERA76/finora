@@ -1,7 +1,13 @@
+import './Loans.css'
+
 function Loans(){
 
     return(
-        <h1>This is Loan page</h1>
+         <>
+            <header className="loans-header">
+                <p>Home / Payments / Loans</p>
+            </header>
+        </>
     );
 
 }

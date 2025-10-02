@@ -1,0 +1,14 @@
+.loans-header {
+  background: linear-gradient(90deg, #dbeafe, #93c5fd); /* smooth light blue gradient */
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e3a8a; /* deep blue text for contrast */
+  border-radius: 6px;
+  margin: 5px 10px; /* leaves 5px from left */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* subtle shadow */
+}
+
+.loans-header p {
+  margin: 0;
+}

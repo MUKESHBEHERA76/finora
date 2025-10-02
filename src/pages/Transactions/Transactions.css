@@ -35,6 +35,7 @@
 .transactions-container > .filter-add-section,
 .transactions-container > .table-wrapper {
   width: 100%;
+  margin-top: 10px;
   max-width: 1000px;
   margin: 0 auto;
   box-sizing: border-box;
@@ -464,4 +465,10 @@
   font-size: 14px;
   font-weight: 500;
   color: #1e3a8a;
+}
+
+
+.card.purse .card-icon {
+  background: #fde68a66;
+  color: #92400e;
 }

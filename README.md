@@ -78,6 +78,7 @@ npx create-react-app my-app
 cd my-app
 npm install react-router-dom
 npm install react-icons
+npm install recharts
 
 
 ======================================================================
