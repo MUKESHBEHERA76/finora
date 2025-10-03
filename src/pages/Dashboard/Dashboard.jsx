@@ -27,7 +27,16 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         const data = await getDashboardInfo();
-        setDashboardData(data);
+
+        // Normalize API response to prevent crashes
+        setDashboardData({
+          ...data,
+          yearlyEarningList: data.yearlyEarningList || [],
+          yearlyExpenseList: data.yearlyExpenseList || [],
+          recentTransaction: Array.isArray(data.recentTransaction)
+            ? data.recentTransaction
+            : [],
+        });
         setError("");
       } catch (err) {
         setError(err.message);
@@ -69,21 +78,27 @@ function Dashboard() {
                 <FaWallet size={24} />
               </div>
               <h4>Earning</h4>
-              <p>₹{Number(dashboardData.earningSum).toLocaleString("en-IN")}</p>
+              <p>
+                ₹{Number(dashboardData.earningSum || 0).toLocaleString("en-IN")}
+              </p>
             </div>
             <div className="card expense">
               <div className="card-icon">
                 <FaMoneyBillWave size={24} />
               </div>
               <h4>Expense</h4>
-              <p>₹{Number(dashboardData.expenseSum).toLocaleString("en-IN")}</p>
+              <p>
+                ₹{Number(dashboardData.expenseSum || 0).toLocaleString("en-IN")}
+              </p>
             </div>
             <div className="card saving">
               <div className="card-icon">
                 <FaPiggyBank size={24} />
               </div>
               <h4>Saving</h4>
-              <p>₹{Number(dashboardData.savingSum).toLocaleString("en-IN")}</p>
+              <p>
+                ₹{Number(dashboardData.savingSum || 0).toLocaleString("en-IN")}
+              </p>
             </div>
           </div>
 
@@ -129,32 +144,38 @@ function Dashboard() {
           {/* Recent Transactions */}
           <div className="recent-transactions">
             <h3>Recent Transactions</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Category</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dashboardData.recentTransaction.map((t, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <img
-                        src={t.imageId}
-                        alt="category"
-                        className="category-img"
-                      />
-                    </td>
-                    <td>{t.categoryName}</td>
-                    <td>{t.categoryType}</td>
-                    <td>₹{Number(t.amount).toLocaleString("en-IN")}</td>
+            {dashboardData.recentTransaction.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {dashboardData.recentTransaction.map((t, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <img
+                          src={t.imageId}
+                          alt="category"
+                          className="category-img"
+                        />
+                      </td>
+                      <td>{t.categoryName}</td>
+                      <td>{t.categoryType}</td>
+                      <td>₹{Number(t.amount || 0).toLocaleString("en-IN")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p style={{ textAlign: "center", marginTop: "10px" }}>
+                No transactions found.
+              </p>
+            )}
           </div>
         </div>
       )}
