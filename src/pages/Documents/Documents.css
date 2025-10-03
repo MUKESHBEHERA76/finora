@@ -1,12 +1,12 @@
 .documents-header {
-  background: linear-gradient(90deg, #e0f2fe, #bfdbfe); /* lighter subtle gradient */
-  padding: 12px 20px;       /* smaller padding */
-  font-size: 16px;         /* smaller text */
-  font-weight: 500;        /* medium, not bold-heavy */
-  color: #1e40af;          /* softer deep blue */
+  background: linear-gradient(90deg, #e0f2fe, #bfdbfe);
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e40af;
   border-radius: 6px;
   margin: 5px 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* softer shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .documents-header p {
@@ -34,6 +34,87 @@
   font-weight: 500;
 }
 
+/* Modern Table */
+.documents-table {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  padding: 0 10px;
+}
+
+.documents-table table {
+  width: 90%;
+  max-width: 1000px;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.documents-table th,
+.documents-table td {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.documents-table thead {
+  background: #f1f5f9;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.documents-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s ease;
+}
+.documents-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Action buttons */
+.documents-table td button {
+  margin: 0 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.documents-table td button svg {
+  font-size: 16px;
+}
+
+.documents-table td button[title="View"] {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.documents-table td button[title="View"]:hover {
+  background: #bae6fd;
+}
+
+.documents-table td button[title="Edit"] {
+  background: #fef9c3;
+  color: #92400e;
+}
+.documents-table td button[title="Edit"]:hover {
+  background: #fde68a;
+}
+
+.documents-table td button[title="Delete"] {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.documents-table td button[title="Delete"]:hover {
+  background: #fecaca;
+}
+
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -52,6 +133,7 @@
   padding: 20px;
   border-radius: 12px;
   width: 400px;
+  max-width: 95%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.3s ease;
 }
@@ -118,5 +200,73 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* Preview modal styles */
+.modal.preview-modal {
+  width: 95%;
+  max-width: 1200px;
+  max-height: 95%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal.preview-modal iframe {
+  width: 100%;
+  height: 90vh; /* full screen for PDF */
+  border: none;
+}
+
+.modal.preview-modal img {
+  max-width: 70%; /* moderate image size */
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+  .documents-table table,
+  .documents-table thead,
+  .documents-table tbody,
+  .documents-table th,
+  .documents-table td,
+  .documents-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  .documents-table thead {
+    display: none;
+  }
+
+  .documents-table tr {
+    margin-bottom: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+  }
+
+  .documents-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .documents-table td:last-child {
+    border-bottom: none;
+  }
+
+  .documents-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #374151;
   }
 }
