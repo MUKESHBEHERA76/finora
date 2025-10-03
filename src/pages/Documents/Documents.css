@@ -1,14 +1,122 @@
 .documents-header {
-  background: linear-gradient(90deg, #dbeafe, #93c5fd); /* smooth light blue gradient */
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e3a8a; /* deep blue text for contrast */
+  background: linear-gradient(90deg, #e0f2fe, #bfdbfe); /* lighter subtle gradient */
+  padding: 12px 20px;       /* smaller padding */
+  font-size: 16px;         /* smaller text */
+  font-weight: 500;        /* medium, not bold-heavy */
+  color: #1e40af;          /* softer deep blue */
   border-radius: 6px;
-  margin: 5px 10px; /* leaves 5px from left */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* subtle shadow */
+  margin: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* softer shadow */
 }
 
 .documents-header p {
   margin: 0;
+}
+
+.upload-btn {
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.upload-btn:hover {
+  background: #2563eb;
+}
+
+.message {
+  text-align: center;
+  margin: 10px 0;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #1e3a8a;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.form-group input,
+.form-group textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.cancel-btn,
+.submit-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cancel-btn {
+  background: #f3f4f6;
+  color: #374151;
+}
+.cancel-btn:hover {
+  background: #e5e7eb;
+}
+.submit-btn {
+  background: #3b82f6;
+  color: #fff;
+}
+.submit-btn:hover {
+  background: #2563eb;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
