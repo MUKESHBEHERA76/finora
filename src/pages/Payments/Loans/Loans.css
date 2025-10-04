@@ -1,14 +1,225 @@
+/* ===== HEADER ===== */
 .loans-header {
-  background: linear-gradient(90deg, #dbeafe, #93c5fd); /* smooth light blue gradient */
+  background: linear-gradient(90deg, #dbeafe, #93c5fd);
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 600;
-  color: #1e3a8a; /* deep blue text for contrast */
+  color: #1e3a8a;
   border-radius: 6px;
-  margin: 5px 10px; /* leaves 5px from left */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* subtle shadow */
+  margin: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .loans-header p {
   margin: 0;
+}
+
+/* ===== REGISTER BUTTON ===== */
+.register-loan-btn {
+  background-color: #60a5fa;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 10px 20px;
+  float: right;
+}
+
+.register-loan-btn:hover {
+  background-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+/* ===== ACTION BAR ===== */
+.loan-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.loan-filter {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* ===== TABLE ===== */
+.loans-table-container {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.loans-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.loans-table th {
+  background-color: #f1f5f9;
+  color: #1e3a8a;
+  font-weight: 600;
+  padding: 12px 10px;
+  text-align: center;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.loans-table td {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 14px;
+  color: #111827;
+}
+
+.loans-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* ===== ICON BUTTONS ===== */
+.icon-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #111827;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+/* Soft pastel colors for buttons */
+.icon-btn.schedule {
+  background-color: #bbf7d0; /* mint green */
+  color: #065f46;
+}
+.icon-btn.schedule:hover {
+  background-color: #86efac;
+}
+
+.icon-btn.forclose {
+  background-color: #fde68a; /* soft amber */
+  color: #78350f;
+}
+.icon-btn.forclose:hover {
+  background-color: #fcd34d;
+}
+
+.icon-btn.view {
+  background-color: #fecaca; /* soft coral */
+  color: #7f1d1d;
+}
+.icon-btn.view:hover {
+  background-color: #fca5a5;
+}
+
+/* Disabled Buttons */
+.icon-btn:disabled {
+  background-color: #f3f4f6 !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .loans-table thead {
+    display: none;
+  }
+
+  .loans-table tr {
+    display: block;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .loans-table td {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px 12px;
+  }
+
+  .loans-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .icon-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+
+/* ===== LOAN CARDS ===== */
+.loan-cards {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 10px;
+  gap: 15px;
+  flex-wrap: nowrap; /* single row on desktop */
+}
+
+.loan-card {
+  flex: 1 1 30%;
+  background: #e0f2fe;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.loan-card:hover {
+  transform: translateY(-3px);
+}
+
+.card-icon {
+  font-size: 32px;
+  color: #2563eb;
+  margin-right: 15px;
+}
+
+.card-info p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: #1e3a8a;
+}
+
+.card-info h3 {
+  margin: 5px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .loan-cards {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .loan-card {
+    flex: 1 1 100%;
+  }
 }
