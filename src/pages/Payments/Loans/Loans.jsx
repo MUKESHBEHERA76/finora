@@ -153,7 +153,7 @@ function Loans() {
           <thead>
             <tr>
               <th>Loan Ref#</th>
-              <th>Start Date</th>
+              <th>Emi start Date</th>
               <th>End Date</th>
               <th>EMI Date</th>
               <th>Tenure</th>
