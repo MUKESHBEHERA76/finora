@@ -17,7 +17,8 @@ const API_CONFIG = {
   DELETE_DOCUMENT:'/deleteDoc',
   UPDATE_DOCUMENT:'/updateDoc',
   REGISTER_LOAN:'/registerLoan',
-  LIST_LOANS:'/getLoans'
+  LIST_LOANS:'/getLoans',
+  FORCLOSE_LOAN:'/forcloseLoan'
 };
 
 export default API_CONFIG;
