@@ -242,14 +242,30 @@ const Transactions = () => {
             </div>
             <div className="card-info">
               <h4>Purse Left</h4>
-              <p>
-                ₹
-                {Number(
-                  totals.earningTotal - totals.expenseTotal
-                ).toLocaleString("en-IN")}
+              <p
+                style={{
+                  color:
+                    ((Number(totals?.earningTotal) || 0) -
+                      (Number(totals?.expenseTotal) || 0) -
+                      (Number(totals?.savingTotal) || 0)) < 0
+                      ? "red"
+                      : "green",
+                }}
+              >
+                {(() => {
+                  const earning = Number(totals?.earningTotal) || 0;
+                  const expense = Number(totals?.expenseTotal) || 0;
+                  const saving = Number(totals?.savingTotal) || 0;
+
+                  const purseLeft = earning - (expense + saving);
+                  const formatted = Math.abs(purseLeft).toLocaleString("en-IN");
+
+                  return purseLeft < 0 ? `-₹${formatted}` : `₹${formatted}`;
+                })()}
               </p>
             </div>
           </div>
+
         </div>
 
         {/* Filter & Add */}
