@@ -15,7 +15,9 @@ const API_CONFIG = {
   UPLOAD_DOCUMENT:'/uploadDoc',
   FETCH_DOCUMENT:'/fetchDoc',
   DELETE_DOCUMENT:'/deleteDoc',
-  UPDATE_DOCUMENT:'/updateDoc'
+  UPDATE_DOCUMENT:'/updateDoc',
+  REGISTER_LOAN:'/registerLoan',
+  LIST_LOANS:'/getLoans'
 };
 
 export default API_CONFIG;
