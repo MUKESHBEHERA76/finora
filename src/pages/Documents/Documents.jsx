@@ -6,7 +6,7 @@ import {
   fetchDocumentById,
   deleteDocument,
 } from "../../services/documentService";
-import { FaEye, FaTrash, FaDownload } from "react-icons/fa";
+import { FaEye, FaTrash, FaDownload, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 function Documents() {
   const [showModal, setShowModal] = useState(false);
@@ -16,33 +16,37 @@ function Documents() {
   const [deletionDate, setDeletionDate] = useState("");
   const [shortNote, setShortNote] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(""); // Only for initial fetch errors
+  const [message, setMessage] = useState(""); 
   const [documents, setDocuments] = useState([]);
   const [previewDoc, setPreviewDoc] = useState(null);
   const [deleteDocId, setDeleteDocId] = useState(null);
 
-  // Initial fetch
+  // Filter
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2;
+
+  // Fetch documents initially
   useEffect(() => {
     const fetchInitialDocuments = async () => {
       try {
         const res = await fetchDocuments();
         setDocuments(res.documents || []);
       } catch (err) {
-        setMessage(err.message); // show only initial fetch errors
+        setMessage(err.message);
       }
     };
     fetchInitialDocuments();
   }, []);
 
-  // Refresh documents safely
   const refreshDocuments = async () => {
     try {
       const res = await fetchDocuments();
-      const docs = res?.documents || [];
-      setDocuments(docs);
-    } catch (err) {
-      //alert(err.message); // alert any errors after initial fetch
-    }
+      setDocuments(res?.documents || []);
+      setCurrentPage(1); 
+    } catch (err) {}
   };
 
   const handleFileChange = (e) => {
@@ -94,12 +98,10 @@ function Documents() {
       };
       const res = await uploadDocument(payload);
       alert(res.message || "File uploaded successfully!");
-
       setFile(null);
       setDeletionDate("");
       setShortNote("");
       setShowModal(false);
-
       await refreshDocuments();
     } catch (err) {
       alert(err.message);
@@ -140,12 +142,9 @@ function Documents() {
     try {
       setLoading(true);
       setShowDeleteConfirm(false);
-
       const res = await deleteDocument(deleteDocId);
       alert(res.message || "Document deleted successfully.");
       setDeleteDocId(null);
-
-      // Clear the table first to force re-render in case of last document
       setDocuments([]);
       await refreshDocuments();
     } catch (err) {
@@ -154,6 +153,22 @@ function Documents() {
       setLoading(false);
     }
   };
+
+  // Pagination
+  const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
+  // Apply filter
+  const filteredDocs = documents.filter((doc) =>
+    doc.document_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    doc.document_short_note.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredDocs.length / rowsPerPage);
+  const paginatedDocs = filteredDocs.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   return (
     <>
@@ -167,8 +182,21 @@ function Documents() {
         </button>
       </div>
 
-      {/* Only initial fetch errors displayed */}
       {message && <p className="message">{message}</p>}
+
+      {/* Centered Single Filter Box */}
+      <div style={{ display: "flex", justifyContent: "center", margin: "15px 0" }}>
+        <input
+          type="text"
+          placeholder="Search by Name or Note"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          style={{ width: "50%", padding: "8px" }}
+        />
+      </div>
 
       <div className="documents-table">
         <table>
@@ -182,23 +210,24 @@ function Documents() {
             </tr>
           </thead>
           <tbody>
-            {documents.map((doc) => (
-              <tr key={doc.document_id}>
-                <td data-label="Name">{doc.document_name}</td>
-                <td data-label="Upload Date">{doc.document_upload_date}</td>
-                <td data-label="Deletion Date">{doc.document_deletion_date}</td>
-                <td data-label="Note">{doc.document_short_note}</td>
-                <td data-label="Actions">
-                  <button onClick={() => handleView(doc.document_id)} title="View">
-                    <FaEye />
-                  </button>
-                  <button onClick={() => confirmDelete(doc.document_id)} title="Delete">
-                    <FaTrash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {documents.length === 0 && (
+            {paginatedDocs.length > 0 ? (
+              paginatedDocs.map((doc) => (
+                <tr key={doc.document_id}>
+                  <td data-label="Name">{doc.document_name}</td>
+                  <td data-label="Upload Date">{doc.document_upload_date?.substring(0, 10) || "-"}</td>
+                  <td data-label="Deletion Date">{doc.document_deletion_date?.substring(0, 10) || "-"}</td>
+                  <td data-label="Note">{doc.document_short_note}</td>
+                  <td data-label="Actions">
+                    <button onClick={() => handleView(doc.document_id)} title="View">
+                      <FaEye />
+                    </button>
+                    <button onClick={() => confirmDelete(doc.document_id)} title="Delete">
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td colSpan="5" style={{ textAlign: "center" }}>
                   No documents found.
@@ -207,7 +236,25 @@ function Documents() {
             )}
           </tbody>
         </table>
+
+        
       </div>
+      {/* Pagination */}
+        {filteredDocs.length > rowsPerPage && (
+          <div className="pagination" style={{ textAlign: "center", marginTop: "10px"}}>
+            <FaChevronLeft
+              onClick={handlePrevPage}
+              style={{ cursor: currentPage === 1 ? "not-allowed" : "pointer", marginRight: "10px", color: currentPage === 1 ? "#ccc" : "#000" }}
+            />
+            <span style={{ margin: "0 10px" }}>
+              {currentPage} / {totalPages}
+            </span>
+            <FaChevronRight
+              onClick={handleNextPage}
+              style={{ cursor: currentPage === totalPages ? "not-allowed" : "pointer", marginLeft: "10px", color: currentPage === totalPages ? "#ccc" : "#000" }}
+            />
+          </div>
+        )}
 
       {/* Upload Modal */}
       {showModal && (
@@ -288,10 +335,7 @@ function Documents() {
             <h2>Confirm Delete</h2>
             <p>Are you sure you want to delete this document?</p>
             <div className="modal-actions">
-              <button
-                className="cancel-btn"
-                onClick={() => setShowDeleteConfirm(false)}
-              >
+              <button className="cancel-btn" onClick={() => setShowDeleteConfirm(false)}>
                 Cancel
               </button>
               <button className="submit-btn" onClick={handleDelete}>

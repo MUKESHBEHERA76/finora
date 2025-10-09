@@ -17,6 +17,8 @@ import {
   FaArrowLeft,
   FaArrowRight,
   FaSpinner,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 
 const Transactions = () => {
@@ -56,11 +58,25 @@ const Transactions = () => {
 
   const transactionsPerPage = 10;
 
+  // NEW: totals visibility toggle
+  const [showTotals, setShowTotals] = useState(false);
+
   // Fetch transactions
   const fetchTransactions = async () => {
     try {
       const data = await getTransactions({ filter, startDate, endDate });
       setTransactions(data.results || []);
+
+
+      // Sort in descending order by transaction_date
+      const sortedTransactions = (data.results || []).sort(
+        (a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)
+      );
+
+      setTransactions(sortedTransactions);
+
+
+
       setTotals(
         data.totalAmount || { savingTotal: 0, earningTotal: 0, expenseTotal: 0 }
       );
@@ -215,7 +231,21 @@ const Transactions = () => {
             </div>
             <div className="card-info">
               <h4>Saving</h4>
-              <p>₹{Number(totals.savingTotal).toLocaleString("en-IN")}</p>
+              <p>
+                {showTotals
+                  ? `₹${Number(totals.savingTotal).toLocaleString("en-IN")}`
+                  : "****"}
+              </p>
+              {/* Toggle visibility (Eye icon) */}
+              <div className="toggle-visibility">
+                <button
+                  className="toggle-visibility-btn"
+                  onClick={() => setShowTotals((s) => !s)}
+                  title={showTotals ? "Hide totals" : "Show totals"}
+                >
+                  {showTotals ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
           </div>
           <div className="card earning">
@@ -224,7 +254,21 @@ const Transactions = () => {
             </div>
             <div className="card-info">
               <h4>Earning</h4>
-              <p>₹{Number(totals.earningTotal).toLocaleString("en-IN")}</p>
+              <p>
+                {showTotals
+                  ? `₹${Number(totals.earningTotal).toLocaleString("en-IN")}`
+                  : "****"}
+              </p>
+              {/* Toggle visibility (Eye icon) */}
+              <div className="toggle-visibility">
+                <button
+                  className="toggle-visibility-btn"
+                  onClick={() => setShowTotals((s) => !s)}
+                  title={showTotals ? "Hide totals" : "Show totals"}
+                >
+                  {showTotals ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
           </div>
           <div className="card expense">
@@ -233,7 +277,21 @@ const Transactions = () => {
             </div>
             <div className="card-info">
               <h4>Expense</h4>
-              <p>₹{Number(totals.expenseTotal).toLocaleString("en-IN")}</p>
+              <p>
+                {showTotals
+                  ? `₹${Number(totals.expenseTotal).toLocaleString("en-IN")}`
+                  : "****"}
+              </p>
+              {/* Toggle visibility (Eye icon) */}
+              <div className="toggle-visibility">
+                <button
+                  className="toggle-visibility-btn"
+                  onClick={() => setShowTotals((s) => !s)}
+                  title={showTotals ? "Hide totals" : "Show totals"}
+                >
+                  {showTotals ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </div>
           </div>
           <div className="card purse-left">
@@ -265,8 +323,9 @@ const Transactions = () => {
               </p>
             </div>
           </div>
-
         </div>
+
+
 
         {/* Filter & Add */}
         <div className="filter-add-section">

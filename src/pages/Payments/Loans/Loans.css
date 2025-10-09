@@ -46,12 +46,15 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 14px;
+  margin-right: 10px;
 }
 
 /* ===== TABLE ===== */
 .loans-table-container {
   margin-top: 20px;
   overflow-x: auto;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .loans-table {

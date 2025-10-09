@@ -4,7 +4,7 @@ import { FaMoneyBill, FaFilePdf, FaCalendarCheck, FaCoins } from "react-icons/fa
 import RegisterLoanModal from "./RegisterLoanModal";
 import PaymentScheduleModal from "./PaymentScheduleModal";
 import DocumentPreviewModal from "./DocumentPreviewModal";
-import ForcloseLoanModal from "./ForcloseLoanModal"; 
+import ForcloseLoanModal from "./ForcloseLoanModal";
 import { getLoans, fetchLoanDocument } from "../../../services/loanService";
 
 function Loans() {
@@ -13,6 +13,7 @@ function Loans() {
   const [isDocPreviewOpen, setIsDocPreviewOpen] = useState(false);
   const [isForcloseOpen, setIsForcloseOpen] = useState(false);
   const [loans, setLoans] = useState([]);
+  const [filteredLoans, setFilteredLoans] = useState([]);
   const [isActive, setIsActive] = useState(true);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [selectedForcloseLoan, setSelectedForcloseLoan] = useState(null);
@@ -20,29 +21,54 @@ function Loans() {
   const [noClosedLoan, setNoClosedLoan] = useState(false);
   const [showCards, setShowCards] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [filterText, setFilterText] = useState("");
 
+  // ===== PAGINATION STATE =====
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  const totalPages = Math.ceil(filteredLoans.length / rowsPerPage);
+
+  const paginatedLoans = filteredLoans.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // ===== LOAD LOANS =====
   const loadLoans = async (activeStatus = true) => {
     setLoading(true);
     setLoans([]);
+    setFilteredLoans([]);
     setNoClosedLoan(false);
     setShowCards(false);
+    setCurrentPage(1);
+    setFilterText("");
 
     try {
       const res = await getLoans(activeStatus);
 
       if (!activeStatus && res.status === 500) {
         setLoans([]);
+        setFilteredLoans([]);
         setNoClosedLoan(true);
         return;
       }
 
       const loansData = res.loans || [];
       setLoans(loansData);
+      setFilteredLoans(loansData);
       setNoClosedLoan(false);
 
       if (activeStatus) setShowCards(true);
     } catch (err) {
       setLoans([]);
+      setFilteredLoans([]);
       setShowCards(false);
       if (!activeStatus) setNoClosedLoan(true);
       else alert(err.message);
@@ -55,6 +81,7 @@ function Loans() {
     loadLoans(true);
   }, []);
 
+  // ===== DOCUMENT PREVIEW =====
   const handleViewDoc = async (docId) => {
     try {
       const res = await fetchLoanDocument(docId);
@@ -84,12 +111,26 @@ function Loans() {
   // ===== CARD CALCULATIONS =====
   const totalLoanRunning = loans.length;
   const monthlyEmi = loans.reduce((sum, loan) => sum + Number(loan.emi_amount || 0), 0);
-
   const loansClosingThisMonth = loans.filter((loan) => {
     const endDate = new Date(loan.loan_end_date);
     const today = new Date();
     return endDate.getMonth() === today.getMonth() && endDate.getFullYear() === today.getFullYear();
   }).length;
+
+  // ===== FILTER HANDLER =====
+  const handleFilterChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setFilterText(value);
+    setCurrentPage(1); // reset pagination
+
+    const filtered = loans.filter((loan) =>
+      (loan.loan_reference_number || "").toLowerCase().includes(value) ||
+      (loan.total_money_taken || "").toString().toLowerCase().includes(value) ||
+      (loan.loandescription || "").toLowerCase().includes(value) ||
+      (loan.emi_amount || "").toString().toLowerCase().includes(value)
+    );
+    setFilteredLoans(filtered);
+  };
 
   return (
     <>
@@ -97,6 +138,7 @@ function Loans() {
         <p>Home / Payments / Loans</p>
       </header>
 
+      {/* ===== ACTION BAR ===== */}
       <div className="loan-actions">
         <button className="register-loan-btn" onClick={() => setIsModalOpen(true)}>
           Register Loan
@@ -115,6 +157,8 @@ function Loans() {
           <option value="closed">Closed Loans</option>
         </select>
       </div>
+
+
 
       {/* ===== CARDS ===== */}
       {showCards && loans.length > 0 && (
@@ -145,9 +189,31 @@ function Loans() {
         </div>
       )}
 
+
+      {/* ===== FILTER BAR ===== */}
+      <div className="loan-filter-bar" style={{ margin: "10px 20px" }}>
+        <input
+          type="text"
+          placeholder="Filter by Loan Ref#, Total Loan, Description, EMI..."
+          value={filterText}
+          onChange={handleFilterChange}
+          style={{
+            width: "100%",
+            padding: "8px 12px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            fontSize: "14px"
+          }}
+        />
+      </div>
+
+
+
+
       {/* ===== LOADING ===== */}
       {loading && <p style={{ textAlign: "center", marginTop: "20px" }}>Loading loans...</p>}
 
+      {/* ===== TABLE ===== */}
       <div className="loans-table-container">
         <table className="loans-table">
           <thead>
@@ -169,16 +235,16 @@ function Loans() {
             </tr>
           </thead>
           <tbody>
-            {loans.length > 0 ? loans.map(loan => (
+            {paginatedLoans.length > 0 ? paginatedLoans.map((loan) => (
               <tr key={loan.loan_reference_number}>
-                <td data-label="Ref#">{loan.loan_reference_number}</td>
-                <td data-label="Start">{loan.loan_taken_date}</td>
-                <td data-label="End">{loan.loan_end_date}</td>
-                <td data-label="EMI Date">{loan.emi_date}</td>
-                <td data-label="Tenure">{loan.tenure_in_months}</td>
-                <td data-label="EMI">{loan.emi_amount}</td>
-                <td data-label="Total">{loan.total_money_taken}</td>
-                <td data-label="Desc">{loan.loandescription}</td>
+                <td>{loan.loan_reference_number}</td>
+                <td>{loan.loan_taken_date ? loan.loan_taken_date.substring(0, 10) : ""}</td>
+                <td>{loan.loan_end_date ? loan.loan_end_date.substring(0, 10) : ""}</td>
+                <td>{loan.emi_date}</td>
+                <td>{loan.tenure_in_months}</td>
+                <td>{loan.emi_amount}</td>
+                <td>{loan.total_money_taken}</td>
+                <td>{loan.loandescription}</td>
 
                 {isActive && <>
                   <td>
@@ -188,7 +254,7 @@ function Loans() {
                   </td>
                   <td>
                     <button className="icon-btn forclose" onClick={() => handleForcloseLoan(loan)}>
-                      💰 Forclose
+                      Forclose
                     </button>
                   </td>
                   <td>
@@ -213,10 +279,36 @@ function Loans() {
             )}
           </tbody>
         </table>
+
+        {/* ===== PAGINATION ===== */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="pagination-icon"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              &#8592; Prev
+            </button>
+
+            <span className="page-info">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className="pagination-icon"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next &#8594;
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* ===== MODALS ===== */}
       {isModalOpen && (
-        <RegisterLoanModal 
+        <RegisterLoanModal
           onClose={() => setIsModalOpen(false)}
           refreshLoans={() => loadLoans(isActive)}
         />
