@@ -115,6 +115,38 @@
   color: #111827;
 }
 
+/* Toggle visibility (eye icon) */
+.toggle-visibility {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.toggle-visibility button.toggle-visibility-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #1e3a8a;
+  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+.toggle-visibility button.toggle-visibility-btn:hover {
+  color: #3b82f6;
+  background: rgba(59,130,246,0.06);
+}
+
 /* Filter and Add section */
 .filter-add-section {
   display: flex;
@@ -122,7 +154,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 25px;
+  margin-top: 5px; /* reduced spacing from cards as requested */
   margin-bottom: 15px;
 }
 
@@ -182,6 +214,8 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  margin-left: auto; /* ensures right alignment */
+  width: auto; /* auto width as requested */
 }
 
 .add-transaction-btn:hover {
@@ -472,3 +506,4 @@
   background: #fde68a66;
   color: #92400e;
 }
+
