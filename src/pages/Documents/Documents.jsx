@@ -26,7 +26,7 @@ function Documents() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 2;
+  const rowsPerPage = 5;
 
   // Fetch documents initially
   useEffect(() => {
