@@ -5,6 +5,7 @@ import {
   FaHome, FaUser, FaCog, FaBars, FaTimes, FaSignOutAlt, FaChartLine,
   FaMoneyBillAlt, FaFolderOpen, FaChevronDown, FaChevronUp, FaExchangeAlt, FaIdCard, FaFileAlt
 } from "react-icons/fa";
+import { MdBarChart } from "react-icons/md";
 import NavItem from "./NavItem";
 import { useAuth } from "../context/AuthContext";
 import LogoImg from "../assets/logo/Finora_logo.png";
@@ -135,7 +136,7 @@ const Sidebar = ({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) => {
             <NavItem to="/payments/loans" icon={FaMoneyBillAlt} label="Loans" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/payments/bonds" icon={FaChartLine} label="Bonds" collapsed={collapsed} onClick={toggleMobile} />
             
-            <NavItem to="/cards" icon={FaIdCard} label="Cards" collapsed={collapsed} onClick={toggleMobile} />
+            <NavItem to="/stocks" icon={MdBarChart} label="Stocks" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem to="/documents" icon={FaFileAlt} label="Documents" collapsed={collapsed} onClick={toggleMobile} />
             <NavItem icon={FaSignOutAlt} label="Logout" collapsed={collapsed} onClick={handleLogout} />
           </ul>
