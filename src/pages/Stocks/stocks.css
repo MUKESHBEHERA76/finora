@@ -5,32 +5,34 @@
 }
 
 .stocks-header {
+  /* REVERTED: Original blue gradient colors */
   background: linear-gradient(90deg, #dbeafe, #93c5fd);
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 600;
+  /* REVERTED: Original text color */
   color: #1e3a8a;
   border-radius: 6px;
-  margin: 5px 10px;
+  /* Retained margin adjustment from previous request (0 10px) */
+  margin: 0 10px; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .stocks-header p {
   margin: 0;
 }
-
 .button-container {
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-end; /* aligns button to the right */
   align-items: center;
   padding: 20px 30px;
+  margin-top: 5px;
   box-sizing: border-box;
-  margin-top: 10px;
 }
 
 .my-btn {
-  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  background: linear-gradient(90deg, #60A5FA, #3B82F6);
   color: white;
   padding: 12px 20px;
   border: none;
@@ -40,9 +42,25 @@
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+
+  /* 👇 Flex layout for icon + text alignment */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  /* 👇 Auto width to fit content */
+  width: auto;
+  min-width: max-content;
 }
 
 .my-btn:hover {
-  background: linear-gradient(90deg, #1d4ed8, #1e3a8a);
+  background: linear-gradient(90deg, #3B82F6, #2563EB);
   transform: translateY(-1px);
+}
+
+.my-btn img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }

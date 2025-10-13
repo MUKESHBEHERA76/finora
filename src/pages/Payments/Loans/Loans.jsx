@@ -175,7 +175,7 @@ function Loans() {
             <FaMoneyBill className="card-icon" />
             <div className="card-info">
               <p>Monthly EMI</p>
-              <h3>{monthlyEmi}</h3>
+              <h3>{Number(monthlyEmi).toFixed(2)}</h3>
             </div>
           </div>
 
